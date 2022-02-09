@@ -1,0 +1,14 @@
+{
+    "socialmedia": {
+        "instagram": "",
+        "youtube": "",
+        "twitch": "",
+        "vk": "",
+        "github": ""
+    },
+    "description": "",
+    "premium": {
+        "status": false,
+        "end": 0
+    }
+}

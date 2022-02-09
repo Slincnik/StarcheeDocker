@@ -1,0 +1,86 @@
+{
+    "prefix": "/",
+    "welcomelog": {
+        "value": false,
+        "channel": ""
+    },
+    "byelog": {
+        "value": false,
+        "channel": ""
+    },
+    "banaddlog": {
+        "value": false,
+        "channel": ""
+    },
+    "banremovelog": {
+        "value": false,
+        "channel": ""
+    },
+    "welcomeuser": {
+        "value": false,
+        "channel": "",
+        "message": ""
+    },
+    "byeuser": {
+        "value": false,
+        "channel": "",
+        "message": ""
+    },
+    "music": {
+        "volume": 0.3,
+        "blacklist": []
+    },
+    "tickets": {
+        "value": true,
+        "blacklist": [],
+        "channels": {}
+    },
+    "usersystem": {
+        "value": false,
+        "lvlup": {
+            "value": false,
+            "message": ""
+        },
+        "stats": {}
+    },
+    "subscribe": {
+        "value": false,
+        "date": 0
+    },
+    "blacklist": [],
+    "chatfilter": {
+        "filter": false,
+        "array": []
+    },
+    "modules": {
+        "account": true,
+        "administration": true,
+        "economic": false,
+        "find": false,
+        "games": true,
+        "help": true,
+        "moderation": false,
+        "music": false,
+        "stats": false,
+        "utility": true
+    },
+    "perms": {},
+    "joinroles": [],
+    "warnings": {
+        "value": false,
+        "list": {},
+        "count": 5
+    },
+    "personalroles": {},
+    "mute": {
+        "automutetime": "21600000",
+        "muterole": "",
+        "channelblacklist": [],
+        "chatfilter": false
+    },
+    "captcha": {
+        "value": false,
+        "channel": "",
+        "roleid": ""
+    }
+}

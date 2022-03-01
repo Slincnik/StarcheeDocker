@@ -9,6 +9,7 @@ const client = new Client({
         'GUILD_VOICE_STATES',
         'GUILD_PRESENCES',
         'GUILD_MEMBERS',
+        'GUILD_SCHEDULED_EVENTS',
     ],
 });
 client.init();

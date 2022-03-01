@@ -11,15 +11,14 @@ export default class DataBaseConnect {
         )}@${encodeURIComponent(settings.DB_HOST)}:${encodeURIComponent(
             settings.DB_PORT,
         )}/?authMechanism=DEFAULT&authSource=admin`;
-        this.selectDB = settings.SELECTED_DB
+        this.selectDB = settings.SELECTED_DB;
     }
 
     async connect() {
         try {
             this.dbClient = new MongoClient(this.url);
-            this.dbClient.connect().then(() => {
-                console.log('Connected to dababase')
-            })
+            await this.dbClient.connect();
+            console.log('Connected to dababase');
         } catch (error) {
             console.error('Error with connect to database', error);
             process.exit(1);

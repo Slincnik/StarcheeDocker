@@ -1,7 +1,7 @@
 import { Event } from '../Classes/Event';
 import Permission from '../Classes/Permission';
 import Client from '../Client';
-
+import guildsettingskeys from '../Utils/guildkeys.json';
 export default class ReadyEvent extends Event {
     constructor(client: Client) {
         super(client, 'ready');
@@ -15,15 +15,47 @@ export default class ReadyEvent extends Event {
             status: 'online',
         });
 
+        // TODO: Доделать
+        // client.guilds.cache.forEach((value) => {
+        //     client.scheduled.set(value.id, {
+        //         users: {}
+        //     });
+        // });
+
         await client.provider.init(client);
-        //client.guilds.cache.get('447860330958159874').commands.set(client.slashArray);
-        // .then((cmd) => {
-        //     const getRoles = (commandName) => {
-        //         const permissions = client.slashArray.find(x => x.name === commandName).userPermissions;
-        //         if (permissions) return null;
-        //     }
-        // })
         client.permission = new Permission(this.client);
+
+        client.provider.guildsID.forEach(async (value: string) => {
+            const tableload = await this.client.provider.fetchGuild(value);
+            if (tableload) {
+                // tslint:disable-next-line: forin
+                for (const key in guildsettingskeys) {
+                    if (
+                        (!tableload[key] && typeof tableload[key] === 'undefined') ||
+                        typeof tableload[key] !==
+                            (!Array.isArray(guildsettingskeys[key])
+                                ? typeof guildsettingskeys[key]
+                                : 'array')
+                    ) {
+                        tableload[key] = guildsettingskeys[key];
+                    }
+                    for (const key2 in guildsettingskeys[key]) {
+                        if (
+                            (!tableload[key][key2] && typeof tableload[key][key2] === 'undefined') ||
+                            typeof tableload[key][key2] !==
+                                (!Array.isArray(guildsettingskeys[key][key])
+                                    ? typeof guildsettingskeys[key][key2]
+                                    : 'array')
+                        ) {
+                            tableload[key] = guildsettingskeys[key];
+                        }
+                    }
+                }
+                await this.client.provider.setGuildComplete(value, tableload);
+            } else {
+                await this.client.provider.reloadGuild(value);
+            }
+        });
 
         function timeoutForMute(muteconf: { memberid: string }, newMuteTime: number) {
             setTimeout(async () => {

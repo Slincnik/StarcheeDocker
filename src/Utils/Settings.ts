@@ -14,6 +14,7 @@ export default class Provider extends SettingsProvider {
     public botSettings: Map<string, any> = new Map();
     private guildSettingsCollection: Collection<Document>;
     private userSettingsCollection: Collection<Document>;
+    public guildsID: string[] = [];
     public isReady: boolean;
     protected dbClient: MongoClient;
     protected db: Db;
@@ -26,10 +27,8 @@ export default class Provider extends SettingsProvider {
         this.dbClient = client.database.dbClient;
         this.db = this.dbClient.db(client.database.selectDB);
         const guildSettingsCollection = this.db.collection('guildSettings');
-        this.guildSettingsCollection = guildSettingsCollection;
         const { guildSettings } = this;
         const userSettingsCollection = this.db.collection('userSettings');
-        this.userSettingsCollection = userSettingsCollection;
         const { userSettings } = this;
         const botSettingsCollection = this.db.collection('botSettings');
         const { botSettings } = this;
@@ -42,6 +41,14 @@ export default class Provider extends SettingsProvider {
         });
         await botSettingsCollection.createIndex('botconfs', {
             unique: true,
+        });
+
+        this.guildSettingsCollection = guildSettingsCollection;
+        this.userSettingsCollection = userSettingsCollection;
+
+        client.provider.guildSettingsCollection.find().forEach((_guilds) => {
+            if (_guilds.guildId === 'global') return;
+            this.guildsID.push(_guilds.guildId);
         });
 
         /* eslint guard-for-in: 0 */
@@ -204,6 +211,11 @@ export default class Provider extends SettingsProvider {
         this.userSettings.set(USER.id, settings);
         return this.userSettings.get(USER.id);
     }
+
+    /**
+     * Cache user to local userSettings
+     * @param guild - guild ID to be cached
+     */
     async cacheGuild(guild: string) {
         const GUILD = [...this.client.guilds.cache.values()][guild];
         const result = await this.guildSettingsCollection.findOne({

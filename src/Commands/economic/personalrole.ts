@@ -7,6 +7,7 @@ export default class RoleCommand extends Command {
     constructor(client: Client) {
         super(client, {
             name: 'personalrole',
+            aliases: ['ps'],
             checksystem: 'economic',
             group: 'economic',
             desc: 'Покупка личной роли',
@@ -15,16 +16,18 @@ export default class RoleCommand extends Command {
     async execute(message: Message, args: string[]) {
         const price = 1000;
         const personalRoles = this.client.provider.getGuild(message.guild.id, 'personalroles');
+        if (personalRoles[message.member.id]) {
+            await this.checkRole(message, personalRoles);
+            return message.channel.send({
+                embeds: [
+                    new Infomessage('RED', 'Role', 'У вас уже есть персональная роль и я вам выдал её (если её не было)').response(),
+                ],
+            });
+        }
         if (!args.length)
             return message.channel.send({
                 embeds: [
                     new Infomessage('RED', 'Role', '> Usage: role <#HexColor> <Name>').response(),
-                ],
-            });
-        if (personalRoles[message.member.id])
-            return message.channel.send({
-                embeds: [
-                    new Infomessage('RED', 'Role', 'У вас уже есть персональная роль').response(),
                 ],
             });
         const hexColor = args[0];
@@ -80,6 +83,27 @@ export default class RoleCommand extends Command {
             console.error(error);
             message.channel.send('Случилась ошибка');
             throw error;
+        }
+    }
+
+    async checkRole(message: Message, personalRoles: any) {
+        const role = message.guild.roles.cache.find(
+            (rl) => rl.id === personalRoles[message.member.id].roleid,
+        );
+        if (role) message.member.roles.add(role);
+        else {
+            const newPersonalRole = await message.member.guild.roles.create({
+                name: personalRoles[message.member.id].name,
+                color: personalRoles[message.member.id].color,
+                reason: `Create personal role for a ${message.member}'s`,
+            });
+            personalRoles[message.member.id].roleid = newPersonalRole.id;
+            await this.client.provider.setGuild(
+                message.member.guild.id,
+                'personalroles',
+                personalRoles,
+            );
+            message.member.roles.add(newPersonalRole);
         }
     }
 }

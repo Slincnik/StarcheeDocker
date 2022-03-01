@@ -9,7 +9,7 @@ export default class Ball8Command extends Command {
             name: '8ball',
             group: 'utility',
             desc: 'магический шар отвечает на ваш вопрос',
-            cooldown: 5
+            cooldown: 5,
         });
     }
     async execute(message: Message, args: string[]) {
@@ -37,6 +37,7 @@ export default class Ball8Command extends Command {
             'Есть сомнения',
             'Не могу сказать',
             'О чем ты вообще?',
+            '🤨',
         ];
         return rand[Math.floor(Math.random() * rand.length)];
     }
